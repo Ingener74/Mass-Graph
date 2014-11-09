@@ -3,24 +3,6 @@
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 	 viewBox="0 0 128 128" enable-background="new 0 0 128 128" xml:space="preserve">
-<linearGradient id="SVGID_1_" gradientUnits="userSpaceOnUse" x1="35" y1="93" x2="93" y2="35">
-	<stop  offset="0" style="stop-color:#FFFFFF"/>
-	<stop  offset="0.1667" style="stop-color:#424242"/>
-	<stop  offset="0.2138" style="stop-color:#FFFFFF"/>
-	<stop  offset="0.2609" style="stop-color:#020202"/>
-	<stop  offset="0.4203" style="stop-color:#EAEAEA"/>
-	<stop  offset="0.4638" style="stop-color:#000000"/>
-	<stop  offset="0.5217" style="stop-color:#F2F2F2"/>
-	<stop  offset="0.6884" style="stop-color:#282828"/>
-	<stop  offset="0.7283" style="stop-color:#FFFFFF"/>
-	<stop  offset="0.8043" style="stop-color:#4F3636"/>
-	<stop  offset="0.8151" style="stop-color:#3E2A2A"/>
-	<stop  offset="0.8336" style="stop-color:#271B1B"/>
-	<stop  offset="0.8551" style="stop-color:#160F0F"/>
-	<stop  offset="0.8811" style="stop-color:#090606"/>
-	<stop  offset="0.9162" style="stop-color:#020101"/>
-	<stop  offset="1" style="stop-color:#000000"/>
-</linearGradient>
-<polygon fill="url(#SVGID_1_)" points="55,113 55,73 15,73 15,55 55,55 55,15 73,15 73,55 113,55 113,73 73,73 73,113 "/>
+<polygon fill="#009900" points="55,113 55,73 15,73 15,55 55,55 55,15 73,15 73,55 113,55 113,73 73,73 73,113 "/>
 <polygon fill="#8DC63F" points="56,16 72,16 72,56 112,56 112,72 72,72 72,112 56,112 56,72 16,72 16,56 56,56 "/>
 </svg>
