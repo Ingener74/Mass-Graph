@@ -10,6 +10,7 @@ from matplotlib.figure import Figure
 from matplotlib import rc
 
 import numpy as np
+import sympy as sm
 
 import sys
 
@@ -29,7 +30,7 @@ class MatplotlibWidget:
         
         mainWidget.verticalLayout.insertWidget(0, self.figureCanvas)
         
-    def plot2(self, x, y):
+    def plot(self, x, y):
         self.axes.set_xlabel(u'Дата')
         self.axes.set_ylabel(u'Вес, кг')
 #         self.axes.set_axes([-100.0, 100.0, 0.0, 100.0])
@@ -45,12 +46,16 @@ class MainWidget(QWidget, Ui_Form):
         
         self.mplWidget = MatplotlibWidget(self)
         
+        x = sm.Symbol('x')
+        s1 = (1 - 2*x) * (3 + x) + x**2
+        print u'упрощённое выражение ', sm.simplify(s1)
+        
     def addClick(self):
         x = np.linspace(-100.0, 100, 200)
 #         y = np.sin(x)
         y = np.random.random(x.shape)
 
-        self.mplWidget.plot2(x, y)
+        self.mplWidget.plot(x, y)
 
         pass
 
