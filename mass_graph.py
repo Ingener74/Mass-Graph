@@ -1,9 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import numpy as n
-import matplotlib.pyplot as p
+import matplotlib
+matplotlib.use('Qt4Agg')
+matplotlib.rcParams['backend.qt4']='PySide'
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FugureCanvas
+
+import numpy as np
+
 import sys
+
 from PySide.QtGui import *
 from main import Ui_Form
 
