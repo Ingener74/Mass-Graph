@@ -10,15 +10,11 @@ from matplotlib.figure import Figure
 from matplotlib import rc
 
 import numpy as np
-import sympy as sm
 
 import sys
 
 from PySide.QtGui import *
 from main import Ui_Form
-
-font = {'family': 'Courier New', 'weight':'normal'}
-rc('font', **font)
 
 class MatplotlibWidget:
     def __init__(self, mainWidget):
@@ -27,12 +23,14 @@ class MatplotlibWidget:
         self.figureCanvas = FigureCanvas(self.figure)
         
         self.axes = self.figure.add_subplot(111)
+        self.axes.set_title(u'График веса', {'family': 'Courier New'})
+        self.axes.set_xlabel(u'Дата', {'family': 'Courier New'})
+        self.axes.set_ylabel(u'Вес, кг', {'family': 'Courier New'})
+        self.axes.set_ylim((80.0, 130.0))
         
         mainWidget.verticalLayout.insertWidget(0, self.figureCanvas)
         
     def plot(self, x, y):
-        self.axes.set_xlabel(u'Дата')
-        self.axes.set_ylabel(u'Вес, кг')
 #         self.axes.set_axes([-100.0, 100.0, 0.0, 100.0])
         self.axes.plot(x, y)
         self.figureCanvas.draw()
@@ -46,14 +44,9 @@ class MainWidget(QWidget, Ui_Form):
         
         self.mplWidget = MatplotlibWidget(self)
         
-        x = sm.Symbol('x')
-        s1 = (1 - 2*x) * (3 + x) + x**2
-        print u'упрощённое выражение ', sm.simplify(s1)
-        
     def addClick(self):
         x = np.linspace(-100.0, 100, 200)
-#         y = np.sin(x)
-        y = np.random.random(x.shape)
+        y = np.random.random(x.shape) * 10 + 100
 
         self.mplWidget.plot(x, y)
 
@@ -62,8 +55,8 @@ class MainWidget(QWidget, Ui_Form):
 def main():
     app = QApplication(sys.argv)
      
-    m = MainWidget()
-    m.show()
+    mainWidget = MainWidget()
+    mainWidget.show()
      
     return sys.exit(app.exec_())
 
