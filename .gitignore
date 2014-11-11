@@ -58,3 +58,5 @@ target/
 .settings
 main.py
 resources_rc.py
+/add.py
+/settings.py

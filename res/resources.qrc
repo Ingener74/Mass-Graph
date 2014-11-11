@@ -1,5 +1,7 @@
 <RCC>
-    <qresource prefix="/main">
-        <file>add.svg</file>
-    </qresource>
+  <qresource prefix="/main">
+    <file>plus.png</file>
+    <file>graph.png</file>
+    <file>system.png</file>
+  </qresource>
 </RCC>

@@ -13,11 +13,33 @@ try:
     
     from PySide.QtGui import *
     
-    from main import Ui_Form
+    from main import Ui_MainWidget
+    from add import Ui_AddWidget
+    from settings import Ui_Settings
     
 except Exception as e:
     print str(e)
     raise SystemExit
+
+class MassGraph:
+    def __init__(self):
+        pass
+
+class SettingsWidget(QWidget, Ui_Settings):
+    def __init__(self, parent=None):
+        super(SettingsWidget, self).__init__(parent)
+        self.setupUi(self)
+
+class AddWidget(QWidget, Ui_AddWidget):
+    def __init__(self, parent=None):
+        super(AddWidget, self).__init__(parent)
+        self.setupUi(self)
+
+        self.addMassPushButton.clicked.connect(self.addMass)
+        
+    def addMass(self):
+        print 'add mass ', self.massDoubleSpinBox.value()
+        self.hide()
 
 class MatplotlibWidget:
     def __init__(self, mainWidget):
@@ -39,20 +61,29 @@ class MatplotlibWidget:
         self.axes.plot(x, y)
         self.figureCanvas.draw()
 
-class MainWidget(QWidget, Ui_Form):
+class MainWidget(QWidget, Ui_MainWidget):
     def __init__(self, parent=None):
         super(MainWidget, self).__init__(parent)
         self.setupUi(self)
         
-        self.pushButton.clicked.connect(self.addClick)
+        self.addMassPushButton.clicked.connect(self.addClick)
+        self.settingsPushButton.clicked.connect(self.settingsClick)
         
         self.mplWidget = MatplotlibWidget(self)
+        
+        self.addWidget = AddWidget()
+        self.settingsWidget = SettingsWidget()
 
     def addClick(self):
-        x = np.linspace(-100.0, 100, 200)
-        y = np.random.random(x.shape) * 10 + 100
+#         x = np.linspace(-100.0, 100, 200)
+#         y = np.random.random(x.shape) * 10 + 100
+#         
+#         self.mplWidget.plot(x, y)
         
-        self.mplWidget.plot(x, y)
+        self.addWidget.show()
+    
+    def settingsClick(self):
+        self.settingsWidget.show()
 
 def main():
     app = QApplication(sys.argv)
