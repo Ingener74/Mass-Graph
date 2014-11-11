@@ -48,6 +48,7 @@ class AddWidget(QWidget, Ui_AddWidget):
     def onTimeout(self):
         now = QDateTime.currentDateTime()
 #         print 'date and time', now.toPython()
+        self.dateTimeEdit.setDateTime(now)
         
     def addMass(self):
         print 'add mass ', self.massDoubleSpinBox.value()
