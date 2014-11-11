@@ -19,7 +19,6 @@ except Exception as e:
     print str(e)
     raise SystemExit
 
-
 class MatplotlibWidget:
     def __init__(self, mainWidget):
         
@@ -35,7 +34,7 @@ class MatplotlibWidget:
         self.axes.set_ylim((80.0, 130.0))
         
         mainWidget.verticalLayout.insertWidget(0, self.figureCanvas)
-        
+
     def plot(self, x, y):
         self.axes.plot(x, y)
         self.figureCanvas.draw()
@@ -48,18 +47,16 @@ class MainWidget(QWidget, Ui_Form):
         self.pushButton.clicked.connect(self.addClick)
         
         self.mplWidget = MatplotlibWidget(self)
-        
+
     def addClick(self):
         x = np.linspace(-100.0, 100, 200)
         y = np.random.random(x.shape) * 10 + 100
-
+        
         self.mplWidget.plot(x, y)
-
-        pass
 
 def main():
     app = QApplication(sys.argv)
-     
+
     mainWidget = MainWidget()
     mainWidget.show()
      
