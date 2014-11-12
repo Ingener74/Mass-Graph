@@ -6,44 +6,6 @@ import json
 import datetime
 import traceback
 
-# [
-#     u'10:57:55-12:11:2014', 
-#     u'11:02:08-12:11:2014', 
-#     u'11:02:09-12:11:2014', 
-#     u'11:02:10-12:11:2014', 
-#     u'11:02:17-12:11:2014', 
-#     u'11:02:18-12:11:2014', 
-#     u'11:02:19-12:11:2014', 
-#     u'20:17:48-12:11:2014', 
-#     u'20:18:07-12:11:2014', 
-#     u'20:26:40-12:11:2014', 
-#     u'20:38:03-12:11:2014', 
-#     u'20:40:04-12:11:2014', 
-#     u'20:57:01-12:11:2014', 
-#     u'21:06:08-12:11:2014', 
-#     u'21:07:10-12:11:2014'
-# ]
-# 
-# [
-#     u'10:57:55-12:11:2014', 
-#     u'11:02:08-12:11:2014', 
-#     u'11:02:09-12:11:2014', 
-#     u'11:02:10-12:11:2014', 
-#     u'11:02:17-12:11:2014', 
-#     u'11:02:18-12:11:2014', 
-#     u'11:02:19-12:11:2014', 
-#     u'20:17:48-12:11:2014', 
-#     u'20:18:07-12:11:2014', 
-#     u'20:26:40-12:11:2014', 
-#     u'20:38:03-12:11:2014', 
-#     u'20:40:04-12:11:2014', 
-#     u'20:57:01-12:11:2014', 
-#     u'21:06:08-12:11:2014', 
-#     u'21:07:10-12:11:2014', 
-#     u'21:09:01-12:11:2014'
-# ]
-
-
 from PySide.QtCore import QTimer, QDateTime
 
 try:
@@ -69,8 +31,8 @@ class DataBase:
         pass
 
 class MassGraph:
-    DATABASE_FILE_NAME   = 'database.json'
-    DATABASE_KEY_PATTERN = '%H:%M:%S-%d:%m:%Y'
+    DATABASE_FILE_NAME     = 'database.json'
+    DATABASE_KEY_PATTERN   = '%H:%M:%S-%d:%m:%Y'
 
     def __init__(self, matplotlibWidget):
         
@@ -108,15 +70,15 @@ class MassGraph:
         return self.y[-1]
 
 class SettingsWidget(QWidget, Ui_Settings):
-    CONFIG_FILE_NAME = 'config.json'
-    CONFIG_UP_MASS   = 'up_mass'
-    CONFIG_DOWN_MASS = 'down_mass'
-    CONFIG_TIME_UNIT = 'time_unit'
-    CONFIG_TIME      = 'time'
-    
-    CONFIG_TIME_UNIT_DAY   = 'day'
-    CONFIG_TIME_UNIT_WEEK  = 'week'
-    CONFIG_TIME_UNIT_MONTH = 'month'
+    CONFIG_FILE_NAME         = 'config.json'
+    CONFIG_UP_MASS           = 'up_mass'
+    CONFIG_DOWN_MASS         = 'down_mass'
+    CONFIG_TIME_UNIT         = 'time_unit'
+    CONFIG_TIME              = 'time'
+
+    CONFIG_TIME_UNIT_DAY     = 'day'
+    CONFIG_TIME_UNIT_WEEK    = 'week'
+    CONFIG_TIME_UNIT_MONTH   = 'month'
     
     TIME_INDEX_TO_UNITS = {0:CONFIG_TIME_UNIT_DAY, 1:CONFIG_TIME_UNIT_WEEK, 2:CONFIG_TIME_UNIT_MONTH}
     TIME_UNITS_TO_INDEX = {CONFIG_TIME_UNIT_DAY:0, CONFIG_TIME_UNIT_WEEK:1, CONFIG_TIME_UNIT_MONTH: 2}
