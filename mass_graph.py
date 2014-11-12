@@ -118,7 +118,8 @@ class SettingsWidget(QWidget, Ui_Settings):
     CONFIG_TIME_UNIT_WEEK  = 'week'
     CONFIG_TIME_UNIT_MONTH = 'month'
     
-    TIME_UNITS = {0: CONFIG_TIME_UNIT_DAY, 1: CONFIG_TIME_UNIT_WEEK, 2: CONFIG_TIME_UNIT_MONTH}
+    TIME_INDEX_TO_UNITS = {0:CONFIG_TIME_UNIT_DAY, 1:CONFIG_TIME_UNIT_WEEK, 2:CONFIG_TIME_UNIT_MONTH}
+    TIME_UNITS_TO_INDEX = {CONFIG_TIME_UNIT_DAY:0, CONFIG_TIME_UNIT_WEEK:1, CONFIG_TIME_UNIT_MONTH: 2}
     
     def __init__(self, mainWidget, parent=None):
         super(SettingsWidget, self).__init__(parent)
@@ -129,16 +130,7 @@ class SettingsWidget(QWidget, Ui_Settings):
         self.upMassDoubleSpinBox.setValue(self.json_data[self.CONFIG_UP_MASS])
         self.downMassDoubleSpinBox.setValue(self.json_data[self.CONFIG_DOWN_MASS])
         self.timeSpinBox.setValue(self.json_data[self.CONFIG_TIME])
-        
-        time_unit = self.json_data[self.CONFIG_TIME_UNIT]
-        if time_unit == self.CONFIG_TIME_UNIT_DAY:
-            self.timeUnitComboBox.setCurrentIndex(0)
-        elif time_unit == self.CONFIG_TIME_UNIT_WEEK:
-            self.timeUnitComboBox.setCurrentIndex(1)
-        elif time_unit == self.CONFIG_TIME_UNIT_MONTH:
-            self.timeUnitComboBox.setCurrentIndex(2)
-        else:
-            raise ValueError('time unit: day, week, month')
+        self.timeUnitComboBox.setCurrentIndex(self.TIME_UNITS_TO_INDEX[self.json_data[self.CONFIG_TIME_UNIT]])
         
         self.downMassDoubleSpinBox.valueChanged.connect(mainWidget.setMassLimits)
         self.downMassDoubleSpinBox.valueChanged.connect(self.downMassChanged)
@@ -165,7 +157,7 @@ class SettingsWidget(QWidget, Ui_Settings):
         self.saveToJson(self.CONFIG_TIME, time)
         
     def timeUnitChanged(self, index):
-        self.saveToJson(self.CONFIG_TIME_UNIT, self.TIME_UNITS[index])
+        self.saveToJson(self.CONFIG_TIME_UNIT, self.TIME_INDEX_TO_UNITS[index])
 
 class AddWidget(QWidget, Ui_AddWidget):
     def __init__(self, massGraph, parent=None):
@@ -211,11 +203,11 @@ class MatplotlibWidget:
     def plot(self, x, y):
         self.line1 = self.axes.plot(x, y)
         self.axes.set_xticklabels([n.strftime('%d:%m:%Y') for i,n in enumerate(x)], rotation=15)
+#         self.axes.clear()
         self.figureCanvas.draw()
         
     def setMassLimits(self):
         self.axes.set_ylim((self.settingsWidget.downMassDoubleSpinBox.value(), self.settingsWidget.upMassDoubleSpinBox.value()))
-        self.axes.clear()
         self.figureCanvas.draw()
 
 class MainWidget(QWidget, Ui_MainWidget):
