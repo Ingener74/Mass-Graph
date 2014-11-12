@@ -36,7 +36,7 @@ class MassGraph:
 
     def __init__(self, matplotlibWidget):
         
-        self.plot = matplotlibWidget
+        self.plotWidget = matplotlibWidget
         
         self.json_data = json.load(open(self.DATABASE_FILE_NAME))
         
@@ -50,7 +50,7 @@ class MassGraph:
             self.x.append(datetime.datetime.strptime(date_time_mass_key, self.DATABASE_KEY_PATTERN))
             self.y.append(self.json_data[date_time_mass_key])
             
-        self.plot.plot(self.x, self.y)
+        self.plotWidget.plot(self.x, self.y)
 
     def saveToJson(self, key, val):
         self.json_data[key.strftime(self.DATABASE_KEY_PATTERN)] = val
@@ -71,6 +71,8 @@ class SettingsWidget(QWidget, Ui_Settings):
     CONFIG_TIME_UNIT_DAY   = 'day'
     CONFIG_TIME_UNIT_WEEK  = 'week'
     CONFIG_TIME_UNIT_MONTH = 'month'
+    
+    TIME_UNITS = {0: CONFIG_TIME_UNIT_DAY, 1: CONFIG_TIME_UNIT_WEEK, 2: CONFIG_TIME_UNIT_MONTH}
     
     def __init__(self, mainWidget, parent=None):
         super(SettingsWidget, self).__init__(parent)
@@ -99,6 +101,8 @@ class SettingsWidget(QWidget, Ui_Settings):
         self.upMassDoubleSpinBox.valueChanged.connect(mainWidget.setMassLimits)
         self.upMassDoubleSpinBox.valueChanged.connect(self.upMassChanged)
         
+        self.timeUnitComboBox.currentIndexChanged.connect(self.timeUnitChanged)
+        
     def saveToJson(self, key, val):
         self.json_data[key] = val
         with open(self.CONFIG_FILE_NAME, "w") as json_file:
@@ -109,6 +113,9 @@ class SettingsWidget(QWidget, Ui_Settings):
     
     def downMassChanged(self, val):
         self.saveToJson(self.CONFIG_DOWN_MASS, val)
+        
+    def timeUnitChanged(self, index):
+        print 'time unit', self.TIME_UNITS[index]
 
 class AddWidget(QWidget, Ui_AddWidget):
     def __init__(self, parent=None):
@@ -152,12 +159,12 @@ class MatplotlibWidget:
         # %H:%M:%S - n.strftime('%d:%m:%Y')
         self.axes.set_xticklabels([n.strftime('%d:%m:%Y') for i,n in enumerate(self.x)], rotation=15)
         
-        self.axes.plot(self.x, self.y)
+        self.axes.plotWidget(self.x, self.y)
         
         mainWidget.verticalLayout.insertWidget(0, self.figureCanvas)
-
-    def plot(self, x, y):
-        self.axes.plot(x, y)
+        
+    def plotWidget(self, x, y):
+        self.axes.plotWidget(x, y)
         self.figureCanvas.draw()
         
     def setMassLimits(self):
@@ -180,6 +187,8 @@ class MainWidget(QWidget, Ui_MainWidget):
 
         self.mplWidget = MatplotlibWidget(self, self.settingsWidget)
 
+        self.massGraph = MassGraph(self.mplWidget)
+
     def addClick(self):
         self.addWidget.show()
     
@@ -192,11 +201,9 @@ class MainWidget(QWidget, Ui_MainWidget):
 def main():
     app = QApplication(sys.argv)
 
-#     mainWidget = MainWidget()
-#     mainWidget.show()
+    mainWidget = MainWidget()
+    mainWidget.show()
 
-    massGraph = MassGraph()
-     
     return sys.exit(app.exec_())
 
 if __name__ == '__main__':
