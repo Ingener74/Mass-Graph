@@ -60,6 +60,9 @@ class MassGraph:
     def addMassToGraph(self, date_time, mass):
         self.saveToJson(date_time, mass)
         self.reloadDateBase()
+        
+    def getLastMass(self):
+        return self.y[-1]
 
 class SettingsWidget(QWidget, Ui_Settings):
     CONFIG_FILE_NAME = 'config.json'
@@ -172,9 +175,6 @@ class MatplotlibWidget:
         self.figureCanvas.draw()
 
 class MainWidget(QWidget, Ui_MainWidget):
-    """
-    Main Window
-    """
     def __init__(self, parent=None):
         super(MainWidget, self).__init__(parent)
         self.setupUi(self)
