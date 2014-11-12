@@ -2,6 +2,10 @@
 # -*- coding: utf-8 -*-
 
 import sys
+import json
+import datetime
+import traceback
+
 from PySide.QtCore import QTimer, QDateTime
 
 try:
@@ -22,17 +26,89 @@ except Exception as e:
     print str(e)
     raise SystemExit
 
-class MassGraph:
+class DataBase:
     def __init__(self):
         pass
 
+class MassGraph:
+    DATABASE_FILE_NAME   = 'database.json'
+    DATABASE_KEY_PATTERN = '%H:%M:%S-%d:%m:%Y'
+
+    def __init__(self, matplotlibWidget):
+        
+        self.plot = matplotlibWidget
+        
+        self.json_data = json.load(open(self.DATABASE_FILE_NAME))
+        
+        self.x = []
+        self.y = []
+        
+        self.reloadDateBase()
+
+    def reloadDateBase(self):
+        for date_time_mass_key in self.json_data.keys():
+            self.x.append(datetime.datetime.strptime(date_time_mass_key, self.DATABASE_KEY_PATTERN))
+            self.y.append(self.json_data[date_time_mass_key])
+            
+        self.plot.plot(self.x, self.y)
+
+    def saveToJson(self, key, val):
+        self.json_data[key.strftime(self.DATABASE_KEY_PATTERN)] = val
+        with open(self.DATABASE_FILE_NAME, "w") as json_file:
+            json.dump(self.json_data, json_file, sort_keys=True, indent=4, separators=(',', ':'))
+
+    def addMassToGraph(self, date_time, mass):
+        self.saveToJson(date_time, mass)
+        self.reloadDateBase()
+
 class SettingsWidget(QWidget, Ui_Settings):
+    CONFIG_FILE_NAME = 'config.json'
+    CONFIG_UP_MASS   = 'up_mass'
+    CONFIG_DOWN_MASS = 'down_mass'
+    CONFIG_TIME_UNIT = 'time_unit'
+    CONFIG_TIME      = 'time'
+    
+    CONFIG_TIME_UNIT_DAY   = 'day'
+    CONFIG_TIME_UNIT_WEEK  = 'week'
+    CONFIG_TIME_UNIT_MONTH = 'month'
+    
     def __init__(self, mainWidget, parent=None):
         super(SettingsWidget, self).__init__(parent)
         self.setupUi(self)
         
+        self.json_data = json.load(open(self.CONFIG_FILE_NAME))
+        
+        self.upMassDoubleSpinBox.setValue(self.json_data[self.CONFIG_UP_MASS])
+        self.downMassDoubleSpinBox.setValue(self.json_data[self.CONFIG_DOWN_MASS])
+        
+        time_unit = self.json_data[self.CONFIG_TIME_UNIT]
+        if time_unit == self.CONFIG_TIME_UNIT_DAY:
+            self.timeUnitComboBox.setCurrentIndex(0)
+        elif time_unit == self.CONFIG_TIME_UNIT_WEEK:
+            self.timeUnitComboBox.setCurrentIndex(1)
+        elif time_unit == self.CONFIG_TIME_UNIT_MONTH:
+            self.timeUnitComboBox.setCurrentIndex(2)
+        else:
+            raise ValueError('time unit: day, week, month')
+        
+        self.timeSpinBox.setValue(self.json_data[self.CONFIG_TIME])
+        
         self.downMassDoubleSpinBox.valueChanged.connect(mainWidget.setMassLimits)
+        self.downMassDoubleSpinBox.valueChanged.connect(self.downMassChanged)
+        
         self.upMassDoubleSpinBox.valueChanged.connect(mainWidget.setMassLimits)
+        self.upMassDoubleSpinBox.valueChanged.connect(self.upMassChanged)
+        
+    def saveToJson(self, key, val):
+        self.json_data[key] = val
+        with open(self.CONFIG_FILE_NAME, "w") as json_file:
+            json.dump(self._json_data, json_file, sort_keys=True, indent=4, separators=(',', ':'))
+
+    def upMassChanged(self, val):
+        self.saveToJson(self.CONFIG_UP_MASS, val)
+    
+    def downMassChanged(self, val):
+        self.saveToJson(self.CONFIG_DOWN_MASS, val)
 
 class AddWidget(QWidget, Ui_AddWidget):
     def __init__(self, parent=None):
@@ -46,9 +122,8 @@ class AddWidget(QWidget, Ui_AddWidget):
         self.timer1.start(1000)
         
     def onTimeout(self):
-        now = QDateTime.currentDateTime()
-#         print 'date and time', now.toPython()
-        self.dateTimeEdit.setDateTime(now)
+        self.now = QDateTime.currentDateTime()
+        self.dateTimeEdit.setDateTime(self.now)
         
     def addMass(self):
         print 'add mass ', self.massDoubleSpinBox.value()
@@ -74,7 +149,7 @@ class MatplotlibWidget:
         self.x = [now1.addDays(i).toPython() for i in xrange(0, 64)]
         self.y = [100 + 5.*np.random.rand() for i,n in enumerate(self.x)]
         
-        # %H:%M:%S - 
+        # %H:%M:%S - n.strftime('%d:%m:%Y')
         self.axes.set_xticklabels([n.strftime('%d:%m:%Y') for i,n in enumerate(self.x)], rotation=15)
         
         self.axes.plot(self.x, self.y)
@@ -117,8 +192,10 @@ class MainWidget(QWidget, Ui_MainWidget):
 def main():
     app = QApplication(sys.argv)
 
-    mainWidget = MainWidget()
-    mainWidget.show()
+#     mainWidget = MainWidget()
+#     mainWidget.show()
+
+    massGraph = MassGraph()
      
     return sys.exit(app.exec_())
 
@@ -127,3 +204,4 @@ if __name__ == '__main__':
         main()
     except Exception as e:
         print str(e)
+        print traceback.format_exc()
