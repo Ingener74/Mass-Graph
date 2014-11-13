@@ -53,22 +53,27 @@ class MassGraph:
         
         self.reloadDateBase()
 
+    def getSortedDates(self, dateBase):
+        date_times = []
+        for i in sorted(dateBase.keys()):
+            date_times.append(datetime.datetime.strptime(i, self.DATABASE_KEY_PATTERN))
+        return date_times
+
     def reloadDateBase(self):
         self.json_data = json.load(open(self.DATABASE_FILE_NAME))
         
         self.x = []
         self.y = []
         
-        for date_time_mass_key in sorted(self.json_data.keys()):
-            self.x.append(datetime.datetime.strptime(date_time_mass_key, self.DATABASE_KEY_PATTERN))
-            self.y.append(self.json_data[date_time_mass_key])
+        for date_time_mass_key in sorted(self.getSortedDates(self.json_data)):
+            self.x.append(date_time_mass_key)
+            self.y.append(self.json_data[date_time_mass_key.strftime(self.DATABASE_KEY_PATTERN)])
         
         self.plotWidget.plot(self.x, self.y)
 
     def saveToJson(self, key, val):
         self.json_data[key.strftime(self.DATABASE_KEY_PATTERN)] = val
         with open(self.DATABASE_FILE_NAME, "w") as json_file:
-#             json.dump(self.json_data, json_file, sort_keys=True, indent=4, separators=(',', ':'))
             json.dump(self.json_data, json_file, indent=4, separators=(',', ':'))
             json_file.flush()
             json_file.close()
