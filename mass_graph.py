@@ -6,6 +6,8 @@ import json
 import datetime
 import traceback
 
+
+
 from PySide.QtCore import QTimer, QDateTime
 
 try:
@@ -92,10 +94,10 @@ class SettingsWidget(QWidget, Ui_Settings):
     CONFIG_TIME_UNIT_DAY     = 'day'
     CONFIG_TIME_UNIT_WEEK    = 'week'
     CONFIG_TIME_UNIT_MONTH   = 'month'
-    
+
     TIME_INDEX_TO_UNITS = {0:CONFIG_TIME_UNIT_DAY, 1:CONFIG_TIME_UNIT_WEEK, 2:CONFIG_TIME_UNIT_MONTH}
     TIME_UNITS_TO_INDEX = {CONFIG_TIME_UNIT_DAY:0, CONFIG_TIME_UNIT_WEEK:1, CONFIG_TIME_UNIT_MONTH: 2}
-    
+
     def __init__(self, mainWidget, parent=None):
         super(SettingsWidget, self).__init__(parent)
         self.setupUi(self)
