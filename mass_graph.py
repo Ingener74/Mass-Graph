@@ -6,8 +6,6 @@ import json
 import datetime
 import traceback
 
-
-
 from PySide.QtCore import QTimer, QDateTime
 
 try:
@@ -27,18 +25,6 @@ try:
 except Exception as e:
     print str(e)
     raise SystemExit
-
-
-
-
-
-class DataBase:
-    def __init__(self):
-        pass
-
-
-
-
 
 class MassGraph:
     DATABASE_FILE_NAME     = 'database.json'
@@ -84,10 +70,6 @@ class MassGraph:
 
     def getLastMass(self):
         return self.y[-1]
-
-
-
-
 
 class SettingsWidget(QWidget, Ui_Settings):
     CONFIG_FILE_NAME         = 'config.json'
@@ -141,10 +123,6 @@ class SettingsWidget(QWidget, Ui_Settings):
     def timeUnitChanged(self, index):
         self.saveToJson(self.CONFIG_TIME_UNIT, self.TIME_INDEX_TO_UNITS[index])
 
-
-
-
-
 class AddWidget(QWidget, Ui_AddWidget):
     def __init__(self, massGraph, parent=None):
         super(AddWidget, self).__init__(parent)
@@ -167,10 +145,6 @@ class AddWidget(QWidget, Ui_AddWidget):
     def addMass(self):
         self.massGraph.addMassToGraph(self.dateTimeEdit.dateTime().toPython(), self.massDoubleSpinBox.value())
         self.hide()
-
-
-
-
 
 class MatplotlibWidget:
     def __init__(self, mainWidget, settingsWidget):
@@ -200,10 +174,6 @@ class MatplotlibWidget:
         self.axes.set_ylim((self.settingsWidget.downMassDoubleSpinBox.value(), self.settingsWidget.upMassDoubleSpinBox.value()))
         self.figureCanvas.draw()
 
-
-
-
-
 class MainWidget(QWidget, Ui_MainWidget):
     def __init__(self, parent=None):
         super(MainWidget, self).__init__(parent)
@@ -229,10 +199,6 @@ class MainWidget(QWidget, Ui_MainWidget):
     def setMassLimits(self):
         self.mplWidget.setMassLimits()
 
-
-
-
-
 def main():
     app = QApplication(sys.argv)
 
@@ -240,10 +206,6 @@ def main():
     mainWidget.show()
 
     return sys.exit(app.exec_())
-
-
-
-
 
 if __name__ == '__main__':
     try:
