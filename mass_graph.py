@@ -26,9 +26,16 @@ except Exception as e:
     print str(e)
     raise SystemExit
 
+class BodyMassModel:
+    def __init__(self):
+        print 'Body mass model'
+
+    def __add__(self, other):
+        pass
+
 class MassGraph:
-    DATABASE_FILE_NAME     = 'database.json'
-    DATABASE_KEY_PATTERN   = '%H:%M:%S-%d:%m:%Y'
+    DATABASE_FILE_NAME = 'database.json'
+    DATABASE_KEY_PATTERN = '%H:%M:%S-%d:%m:%Y'
 
     def __init__(self, matplotlibWidget):
         
@@ -37,53 +44,53 @@ class MassGraph:
         self.x = []
         self.y = []
         
-        self.reloadDateBase()
+        self.reload_date_base()
 
-    def getSortedDates(self, dateBase):
+    def get_sorted_dates(self, date_base):
         date_times = []
-        for i in sorted(dateBase.keys()):
+        for i in sorted(date_base.keys()):
             date_times.append(datetime.datetime.strptime(i, self.DATABASE_KEY_PATTERN))
         return date_times
 
-    def reloadDateBase(self):
+    def reload_date_base(self):
         self.json_data = json.load(open(self.DATABASE_FILE_NAME))
         
         self.x = []
         self.y = []
         
-        for date_time_mass_key in sorted(self.getSortedDates(self.json_data)):
+        for date_time_mass_key in sorted(self.get_sorted_dates(self.json_data)):
             self.x.append(date_time_mass_key)
             self.y.append(self.json_data[date_time_mass_key.strftime(self.DATABASE_KEY_PATTERN)])
         
         self.plotWidget.plot(self.x, self.y)
 
-    def saveToJson(self, key, val):
+    def save_to_json(self, key, val):
         self.json_data[key.strftime(self.DATABASE_KEY_PATTERN)] = val
         with open(self.DATABASE_FILE_NAME, "w") as json_file:
             json.dump(self.json_data, json_file, indent=4, separators=(',', ':'))
             json_file.flush()
             json_file.close()
 
-    def addMassToGraph(self, date_time, mass):
-        self.saveToJson(date_time, mass)
-        self.reloadDateBase()
+    def add_mass_to_graph(self, date_time, mass):
+        self.save_to_json(date_time, mass)
+        self.reload_date_base()
 
-    def getLastMass(self):
+    def get_last_mass(self):
         return self.y[-1]
 
 class SettingsWidget(QWidget, Ui_Settings):
-    CONFIG_FILE_NAME         = 'config.json'
-    CONFIG_UP_MASS           = 'up_mass'
-    CONFIG_DOWN_MASS         = 'down_mass'
-    CONFIG_TIME_UNIT         = 'time_unit'
-    CONFIG_TIME              = 'time'
+    CONFIG_FILE_NAME = 'config.json'
+    CONFIG_UP_MASS = 'up_mass'
+    CONFIG_DOWN_MASS = 'down_mass'
+    CONFIG_TIME_UNIT = 'time_unit'
+    CONFIG_TIME = 'time'
 
-    CONFIG_TIME_UNIT_DAY     = 'day'
-    CONFIG_TIME_UNIT_WEEK    = 'week'
-    CONFIG_TIME_UNIT_MONTH   = 'month'
+    CONFIG_TIME_UNIT_DAY = 'day'
+    CONFIG_TIME_UNIT_WEEK = 'week'
+    CONFIG_TIME_UNIT_MONTH = 'month'
 
-    TIME_INDEX_TO_UNITS = {0:CONFIG_TIME_UNIT_DAY, 1:CONFIG_TIME_UNIT_WEEK, 2:CONFIG_TIME_UNIT_MONTH}
-    TIME_UNITS_TO_INDEX = {CONFIG_TIME_UNIT_DAY:0, CONFIG_TIME_UNIT_WEEK:1, CONFIG_TIME_UNIT_MONTH: 2}
+    TIME_INDEX_TO_UNITS = {0: CONFIG_TIME_UNIT_DAY, 1: CONFIG_TIME_UNIT_WEEK, 2: CONFIG_TIME_UNIT_MONTH}
+    TIME_UNITS_TO_INDEX = {CONFIG_TIME_UNIT_DAY: 0, CONFIG_TIME_UNIT_WEEK: 1, CONFIG_TIME_UNIT_MONTH: 2}
 
     def __init__(self, mainWidget, parent=None):
         super(SettingsWidget, self).__init__(parent)
@@ -96,32 +103,32 @@ class SettingsWidget(QWidget, Ui_Settings):
         self.timeSpinBox.setValue(self.json_data[self.CONFIG_TIME])
         self.timeUnitComboBox.setCurrentIndex(self.TIME_UNITS_TO_INDEX[self.json_data[self.CONFIG_TIME_UNIT]])
         
-        self.downMassDoubleSpinBox.valueChanged.connect(mainWidget.setMassLimits)
-        self.downMassDoubleSpinBox.valueChanged.connect(self.downMassChanged)
+        self.downMassDoubleSpinBox.valueChanged.connect(mainWidget.set_mass_limits)
+        self.downMassDoubleSpinBox.valueChanged.connect(self.down_mass_changed)
         
-        self.upMassDoubleSpinBox.valueChanged.connect(mainWidget.setMassLimits)
-        self.upMassDoubleSpinBox.valueChanged.connect(self.upMassChanged)
+        self.upMassDoubleSpinBox.valueChanged.connect(mainWidget.set_mass_limits)
+        self.upMassDoubleSpinBox.valueChanged.connect(self.up_mass_changed)
         
-        self.timeSpinBox.valueChanged.connect(self.timeChanged)
+        self.timeSpinBox.valueChanged.connect(self.time_changed)
         
-        self.timeUnitComboBox.currentIndexChanged.connect(self.timeUnitChanged)
+        self.timeUnitComboBox.currentIndexChanged.connect(self.time_unit_changed)
 
-    def saveToJson(self, key, val):
+    def save_to_json(self, key, val):
         self.json_data[key] = val
         with open(self.CONFIG_FILE_NAME, "w") as json_file:
             json.dump(self.json_data, json_file, sort_keys=True, indent=4, separators=(',', ':'))
 
-    def upMassChanged(self, val):
-        self.saveToJson(self.CONFIG_UP_MASS, val)
+    def up_mass_changed(self, val):
+        self.save_to_json(self.CONFIG_UP_MASS, val)
 
-    def downMassChanged(self, val):
-        self.saveToJson(self.CONFIG_DOWN_MASS, val)
+    def down_mass_changed(self, val):
+        self.save_to_json(self.CONFIG_DOWN_MASS, val)
 
-    def timeChanged(self, time):
-        self.saveToJson(self.CONFIG_TIME, time)
+    def time_changed(self, time):
+        self.save_to_json(self.CONFIG_TIME, time)
 
-    def timeUnitChanged(self, index):
-        self.saveToJson(self.CONFIG_TIME_UNIT, self.TIME_INDEX_TO_UNITS[index])
+    def time_unit_changed(self, index):
+        self.save_to_json(self.CONFIG_TIME_UNIT, self.TIME_INDEX_TO_UNITS[index])
 
 class AddWidget(QWidget, Ui_AddWidget):
     def __init__(self, massGraph, parent=None):
@@ -130,20 +137,20 @@ class AddWidget(QWidget, Ui_AddWidget):
         
         self.massGraph = massGraph
 
-        self.addMassPushButton.clicked.connect(self.addMass)
+        self.addMassPushButton.clicked.connect(self.add_mass)
         
-        self.massDoubleSpinBox.setValue(massGraph.getLastMass())
+        self.massDoubleSpinBox.setValue(massGraph.get_last_mass())
         
         self.timer1 = QTimer(self)
-        self.timer1.timeout.connect(self.onTimeout)
+        self.timer1.timeout.connect(self.on_timeout)
         self.timer1.start(1000)
         
-    def onTimeout(self):
-        self.now = QDateTime.currentDateTime()
-        self.dateTimeEdit.setDateTime(self.now)
+    def on_timeout(self):
+        now = QDateTime.currentDateTime()
+        self.dateTimeEdit.setDateTime(now)
         
-    def addMass(self):
-        self.massGraph.addMassToGraph(self.dateTimeEdit.dateTime().toPython(), self.massDoubleSpinBox.value())
+    def add_mass(self):
+        self.massGraph.add_mass_to_graph(self.dateTimeEdit.dateTime().toPython(), self.massDoubleSpinBox.value())
         self.hide()
 
 class MatplotlibWidget:
@@ -160,7 +167,7 @@ class MatplotlibWidget:
         self.axes.set_title(u'График веса', font)
         self.axes.set_xlabel(u'Дата', font)
         self.axes.set_ylabel(u'Вес, кг', font)
-        self.setMassLimits()
+        self.set_mass_limits()
         
         mainWidget.verticalLayout.insertWidget(0, self.figureCanvas)
 
@@ -170,7 +177,7 @@ class MatplotlibWidget:
 #         self.axes.clear()
         self.figureCanvas.draw()
 
-    def setMassLimits(self):
+    def set_mass_limits(self):
         self.axes.set_ylim((self.settingsWidget.downMassDoubleSpinBox.value(), self.settingsWidget.upMassDoubleSpinBox.value()))
         self.figureCanvas.draw()
 
@@ -196,14 +203,14 @@ class MainWidget(QWidget, Ui_MainWidget):
     def settingsClick(self):
         self.settingsWidget.show()
 
-    def setMassLimits(self):
-        self.mplWidget.setMassLimits()
+    def set_mass_limits(self):
+        self.mplWidget.set_mass_limits()
 
 def main():
     app = QApplication(sys.argv)
 
-    mainWidget = MainWidget()
-    mainWidget.show()
+    main_widget = MainWidget()
+    main_widget.show()
 
     return sys.exit(app.exec_())
 
