@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourceManagerImpl" format="xml" hash="197791535">
+    <data-source source="LOCAL" name="SQLite -" uuid="08eaedd9-935a-4d68-8fbc-ad8727b3bcaf">
+      <driver-ref>sqlite.xerial</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
+      <jdbc-url>jdbc:sqlite:G:\prj\Mass-Graph\mass.db</jdbc-url>
+      <libraries />
+    </data-source>
+  </component>
+</project>
